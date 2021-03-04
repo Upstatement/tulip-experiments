@@ -7,16 +7,18 @@ const ArtGenerator = {
     "Digital Andon Monitoring",
     "Digital Andon System",
     "Digital Logbook",
-    "Digital Logbook with Work Instructions"
+    "Digital Logbook with Work Instructions",
+    "Digital History Record",
+    "Google Sheets Unit Test",
+    "Kanban System",
+    "Work Order Tracking App"
   ],
-
   get appNameSelectEL() {
     return document.getElementById("appNameSelect");
   },
   get customPhraseInputEl() {
     return document.getElementById("customPhraseInput");
   },
-
   populateAppNameSelectOptions() {
     this.appNames.forEach((name, i) => {
       const optionEl = document.createElement("option");
@@ -34,13 +36,30 @@ const ArtGenerator = {
   },
 
   r: 150,
-
+  colors: [
+    "#FED074",
+    "#F25E4E",
+    "#2B5DBA",
+    "#94E6AE",
+    "#7661AD",
+  ],
   drawAsLine(word) {
     const alphabet = "abcdefghijklmnopqrstuvwxyz";
-    const getDegreeOf = letter => 360 / 26 * (1 + alphabet.indexOf(letter));
+    const getDegreeOf = letter => {
+      const isLetter = alphabet.indexOf(letter) >= 0;
+      const i = isLetter ? 1 + alphabet.indexOf(letter) : alphabet.length * Math.random();
+      return 360 / 26 * i;
+    };
+
+    // const getColorFromWord = word => {
+    //   const i = word.length % this.colors.length;
+    //   return this.colors[i];
+    // };
 
     const path = new Paper.Path();
-
+    // path.strokeColor = getColorFromWord(word);
+    path.strokeColor = "black";
+    
     [...word].forEach(letter => {
       const theta = getDegreeOf(letter);
       const x = this.r * Math.sin(theta) + Paper.view.center.x;
@@ -50,16 +69,21 @@ const ArtGenerator = {
 
     return path;
   },
-
   onResize: null,
   generateArt(phraseToDraw) {
-    const circle = new Paper.Path.Circle(Paper.view.center, this.r);
-
     const sanitizedPhrase = phraseToDraw.toLowerCase().split(" ");
     const wordPaths = sanitizedPhrase.map(word => this.drawAsLine(word));
 
-    const group = new Paper.Group([circle, ...wordPaths]);
-    group.strokeColor = "black";
+    const outerCircle = new Paper.Path.Circle(Paper.view.center, this.r);
+    outerCircle.strokeColor = "black";
+    outerCircle.strokeWidth = 2;
+
+    const innerCircleStrokeWidth = 0;
+    const innerCircle = new Paper.Path.Circle(Paper.view.center, this.r - innerCircleStrokeWidth + 1);
+    innerCircle.strokeColor = "white";
+    innerCircle.strokeWidth = innerCircleStrokeWidth;
+
+    const group = new Paper.Group([...wordPaths, outerCircle, innerCircle]);
 
     Paper.view.draw();
 
