@@ -1,0 +1,16 @@
+{
+  "type": "module",
+  "name": "tulip-experiments",
+  "version": "1.0.0",
+  "description": "Generative design experiments for Tulip's app library",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "snowpack dev"
+  },
+  "dependencies": {
+    "acorn": "^8.0.5",
+    "paper": "^0.12.11",
+    "snowpack": "^3.0.13"
+  }
+}
